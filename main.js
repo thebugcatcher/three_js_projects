@@ -7,7 +7,26 @@ if ( ! Detector.webgl ) {
 
 var container, stats;
 var camera, scene, renderer;
-var sphere;
+var board, boarder;
+var wavespeed = 3.0;
+var in_water = false;
+var moving_right = true;
+var initi = false;
+var jump = false;
+var in_air = false;
+var on_ramp = false;
+var pauseAnim = true;
+var board_speed = 2;
+var board_speed_y = board_speed*Math.sin(35*Math.PI/180);
+var gravity = board_speed/150;
+var group = new THREE.Group();
+var onRender = [];
+var board_cf = new THREE.Matrix4();
+var board_x;
+var board_y;
+var onlefthp;
+var onrighthp;
+
 var parameters = {
     width: 2000,
     height: 2000,
@@ -41,14 +60,17 @@ function init() {
     controls = new THREE.OrbitControls( camera, renderer.domElement );
     controls.userPan = false;
     controls.userPanSpeed = 0.0;
-    controls.maxDistance = 5000.0;
-    controls.maxPolarAngle = Math.PI * 0.495;
+    controls.maxDistance = 12500.0;
+    controls.maxPolarAngle = Math.PI * 2;
     controls.center.set( 0, 500, 0 );
 
-    var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-    light.position.set( - 1, 1, - 1 );
+    var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 2 );
+    light.position.set( -1, 0, -1 );
     scene.add( light );
 
+    var light2 = new THREE.SpotLight(0xffffff);
+    light2.position.set(-1,-1, -1);
+    scene.add(light2);
 
     waterNormals = new THREE.ImageUtils.loadTexture( 'textures/waternormals.jpg' );
     waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
@@ -58,10 +80,10 @@ function init() {
         textureHeight: 512,
         waterNormals: waterNormals,
         alpha: 	1.0,
-        sunDirection: light.position.clone().normalize(),
+        sunDirection: light2.position.clone().normalize(),
         sunColor: 0xffffff,
         waterColor: 0x001e0f,
-        distortionScale: 50.0,
+        distortionScale: 500.0,
     } );
 
 
@@ -74,76 +96,189 @@ function init() {
     mirrorMesh.rotation.x = - Math.PI * 0.5;
     scene.add( mirrorMesh );
 
+    var stone_tex = THREE.ImageUtils.loadTexture("textures/concrete.jpg");
+    /* for repeat to work, the image size must be 2^k */
 
-    // load skybox
+    /* repeat the texture 4 times in both direction */
+    //stone_tex.repeat.set(4,4);
+    //stone_tex.wrapS = THREE.RepeatWrapping;
+    //stone_tex.wrapT = THREE.RepeatWrapping;
 
-    var cubeMap = new THREE.CubeTexture( [] );
-    cubeMap.format = THREE.RGBFormat;
-    cubeMap.flipY = false;
+    var ground =  new THREE.Mesh(
+        new THREE.BoxGeometry(12000,8000,500),
+        new THREE.MeshPhongMaterial({color:0xfefefefe, ambient:0x1d6438, map:stone_tex})
+    );
+    ground.rotation.x = -Math.PI *0.5;
+    ground.position.x = - 4000;
+    scene.add(ground);
 
-    var loader = new THREE.ImageLoader();
-    loader.load( 'textures/skyboxsun25degtest.png', function ( image ) {
+    var cement_text = THREE.ImageUtils.loadTexture("textures/cement.jpg");
+    var grafitti_text = THREE.ImageUtils.loadTexture("textures/grafitti.jpg");
 
-        var getSide = function ( x, y ) {
+    /* for repeat to work, the image size must be 2^k */
 
-            var size = 1024;
+    /* repeat the texture 4 times in both direction */
+    cement_text.repeat.set(1,1);
+    cement_text.wrapS = THREE.RepeatWrapping;
+    cement_text.wrapT = THREE.RepeatWrapping;
 
-            var canvas = document.createElement( 'canvas' );
-            canvas.width = size;
-            canvas.height = size;
+    var up = new THREE.PlaneBufferGeometry(1000, 5000, 10, 10);
+    var rampMat = new THREE.MeshPhongMaterial(
+        {
+            color:0xd3d3d3,
+            ambient:0xd3d3d3,
+            map:cement_text,
+            side: THREE.DoubleSide
+        }
+    );
+    var ramp = new THREE.Mesh (up, rampMat);
+    ramp.position.y = 350;
+    ramp.position.x = -7000;
+    ramp.rotateX(THREE.Math.degToRad(90));
+    ramp.rotateY(THREE.Math.degToRad(35));
 
-            var context = canvas.getContext( '2d' );
-            context.drawImage( image, - x * size, - y * size );
+    scene.add(ramp);
 
-            return canvas;
 
-        };
+    board = new THREE.Group();
+    var base = new THREE.Mesh(
+        new THREE.BoxGeometry(300,150,25),
+        new THREE.MeshPhongMaterial({ color: 0xdddddd,
+            specular: 0x009999, shininess: 30, shading: THREE.FlatShading })
+    );
+    board.add(base);
+    board.rotateX(Math.PI/2);
+    var wheel = new THREE.Mesh(
+        new THREE.CylinderGeometry(20,20,10),
+        new THREE.MeshPhongMaterial({ color: 0xaaaaaa,
+            specular: 0x009900, shininess: 30, shading: THREE.FlatShading })
+    )
+    wheel.position.x = 500;
+    board.position.x = 700;
 
-        cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
-        cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
-        cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
-        cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
-        cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
-        cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
-        cubeMap.needsUpdate = true;
+    //var end1 = new THREE.Mesh(
+    //    new THREE.RingGeometry(50,70,5,5,0,Math.PI/2),
+    //    new THREE.MeshPhongMaterial({ color: 0xdddddd,
+    //        specular: 0x009999, shininess: 30, shading: THREE.FlatShading })
+    //);
+    //
+    //end1.position.x = 900;
+    //scene.add(end1);
 
-    } );
-
-    var cubeShader = THREE.ShaderLib['cube'];
-    cubeShader.uniforms['tCube'].value = cubeMap;
-
-    var skyBoxMaterial = new THREE.ShaderMaterial( {
-        fragmentShader: cubeShader.fragmentShader,
-        vertexShader: cubeShader.vertexShader,
-        uniforms: cubeShader.uniforms,
-        depthWrite: false,
-        side: THREE.BackSide
-    });
-
-    var skyBox = new THREE.Mesh(
-        new THREE.BoxGeometry( 1000000, 1000000, 1000000 ),
-        skyBoxMaterial
+    var half_pipe = new THREE.Group();
+    var ring = new THREE.Mesh(
+        new THREE.CylinderGeometry(500,500,5000,10,10,1,0,Math.PI/2),
+        new THREE.MeshPhongMaterial({
+            color: 0xaaaaaa,
+            side: THREE.DoubleSide,
+            map: grafitti_text
+        })
     );
 
-    scene.add( skyBox );
+    //ring.material.side = THREE.DoubleSide;
+
+    var ring2 = ring.clone();
+    ring.position.y = 750;
+    ring.position.x = -1000;
+    ring.rotation.x = Math.PI/2;
+    half_pipe.add(ring);
+
+    ring2.position.y = 750;
+    ring2.position.x = - 3000;
+    ring2.rotation.x = Math.PI/2;
+    ring2.rotation.z = Math.PI;
+    half_pipe.add(ring2);
+    scene.add(half_pipe);
 
 
-    var geometry = new THREE.IcosahedronGeometry( 400, 4 );
 
-    for ( var i = 0, j = geometry.faces.length; i < j; i ++ ) {
+    scene.add(board);
 
-        geometry.faces[ i ].color.setHex( Math.random() * 0xffffff );
+    var sky = new THREE.Mesh(
+        new THREE.SphereGeometry(20000, 32, 32),
+        new THREE.MeshPhongMaterial({
+            map: THREE.ImageUtils.loadTexture('textures/skyboxsun25degtest.jpg')
+        })
+    );
+    sky.material.side = THREE.BackSide;
+    sky.rotation.x =- Math.PI * 0.5;
+    scene.add(sky);
 
-    }
 
-    var material = new THREE.MeshPhongMaterial( {
-        vertexColors: THREE.FaceColors,
-        shininess: 100,
-        envMap: cubeMap
-    } );
+    var gripTape = THREE.ImageUtils.loadTexture("textures/batman.jpg");
+    /* for repeat to work, the image size must be 2^k */
 
-    sphere = new THREE.Mesh( geometry, material );
-    scene.add( sphere );
+    /* repeat the texture 4 times in both direction */
+    //gripTape.repeat.set(4,4);
+    //gripTape.wrapS = THREE.RepeatWrapping;
+    //gripTape.wrapT = THREE.RepeatWrapping;
+
+    var scaling_factor = 200;
+    var board3 = new THREE.BoxGeometry(1*scaling_factor,3*scaling_factor,.05*scaling_factor);
+    var material3 = new THREE.MeshPhongMaterial( {color:0xd3d3d3, ambient:0xd3d3d3, map:gripTape});
+    var deck = new THREE.Mesh( board3, material3 );
+
+    deck.rotateX(THREE.Math.degToRad(90));
+    deck.rotateZ(THREE.Math.degToRad(90));
+
+    deck.position.set(0,2*scaling_factor,0);
+
+    var base2 = new THREE.BoxGeometry(.3*scaling_factor,.2*scaling_factor,.3*scaling_factor);
+    var material2 = new THREE.MeshBasicMaterial({color:0xd3d3d3});
+    var backTruck = new THREE.Mesh(base2,material2);
+
+    var pipe = new THREE.CylinderGeometry(0.05*scaling_factor, 0.05*scaling_factor,.7*scaling_factor);
+    var frameMat = new THREE.MeshBasicMaterial({color:0xd3d3d3});
+    var backAxil = new THREE.Mesh (pipe, frameMat);
+    backAxil.rotateX(THREE.Math.degToRad(90));
+
+    var fronTruck = backTruck.clone();
+    var frontAxile = backAxil.clone();
+
+
+
+    /*var tip = new  THREE.TorusGeometry(.2,.1, 15, 30);
+    var tipMat = new THREE.MeshPhongMaterial({color: 0x000000});
+    var nose = new THREE.Mesh (tip, tipMat);
+    nose.side = THREE.DoubleSide;
+
+    nose.position.set(0,3,0);*/
+
+    var wheelGeo = new THREE.TorusGeometry(.1*scaling_factor,.08*scaling_factor, 15, 30);
+    var tubeMat = new THREE.MeshPhongMaterial({color: 0x000000});
+    var frontLeft = new THREE.Mesh (wheelGeo, tubeMat);
+
+    var frontRight = frontLeft.clone();
+    var backRight = frontLeft.clone();
+    var backLeft = frontLeft.clone();
+
+    frontRight.position.set (-1*scaling_factor, 1.8*scaling_factor,-.4*scaling_factor);
+    frontLeft.position.set (-1*scaling_factor, 1.8*scaling_factor,.4*scaling_factor);
+    backLeft.position.set(1*scaling_factor,1.8*scaling_factor,.4*scaling_factor);
+    backRight.position.set(1*scaling_factor,1.8*scaling_factor,-.4*scaling_factor);
+
+    backTruck.position.set(1*scaling_factor,1.88*scaling_factor,0);
+    backAxil.position.set(1*scaling_factor,1.8*scaling_factor,0);
+
+    fronTruck.position.set(-1*scaling_factor,1.88*scaling_factor,0);
+    frontAxile.position.set(-1*scaling_factor,1.8*scaling_factor,0);
+
+    group.add (frontLeft);
+    group.add (frontRight);
+    group.add (backRight);
+    group.add (backLeft);
+    group.add(deck);
+    group.add(backAxil);
+    group.add(backTruck);
+    group.add(frontAxile);
+    group.add(fronTruck);
+
+    group.position.x = -10000;
+    group.position.y = -75;
+
+    board_cf.multiply(new THREE.Matrix4().makeTranslation(-10000,-75,0));
+    board_x = -10000;
+    scene.add(group);
 
 }
 
@@ -160,110 +295,62 @@ function render() {
 
     var time = performance.now() * 0.001;
 
-    sphere.position.y = Math.sin( time ) * 500 + 250;
-    sphere.rotation.x = time * 0.5;
-    sphere.rotation.z = time * 0.51;
+    //if (pauseAnim) return;
+    var tran = new THREE.Vector3();
+    var quat = new THREE.Quaternion();
+    var rot = new THREE.Quaternion();
+    var vscale = new THREE.Vector3();
+    //board_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(time * 72)));
 
-    water.material.uniforms.time.value += 1.0 / 60.0;
+    if ( board_x < -7400){
+        board_cf.multiply(new THREE.Matrix4().makeTranslation(board_speed*time,0,0));
+        board_x += board_speed * time;
+    }
+    else if (on_ramp != true){
+        board_x = -6800;
+        board_cf = new THREE.Matrix4().makeTranslation(-6800,125, 0);
+        board_cf.multiply(new THREE.Matrix4().makeRotationZ(Math.PI/180*35));
+        on_ramp = true;
+    }
+    else if (board_x< -6000){
+        board_x += board_speed *Math.cos(Math.PI/180*35)* time;
+        board_cf.multiply(new THREE.Matrix4().makeTranslation(
+            board_speed * time, 0, 0));
+        if (board_x > -6000)
+            board_cf.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/180*35));
+    }
+    else if (board_x < - 3850){
+        board_cf.multiply(new THREE.Matrix4().makeTranslation
+        (board_speed*Math.cos(Math.PI/180*35)*time, board_speed_y*time, 0));
+        board_x += board_speed *Math.cos(Math.PI/180*35)* time;
+        board_speed_y -= gravity;
+        board_y = group.position.y;
+        if (board_x >= -3850){
+            board_cf = new THREE.Matrix4().makeTranslation(-3850,1000, 0);
+            board_y = 1000;
+            board_x - 3850;
+            board_cf.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
+        }
+        moving_right = true;
+    }
+    else if (board_y > -75 && moving_right){
+        board_cf.multiply(new THREE.Matrix4().makeTranslation
+        (2*board_speed * time, 0, 0));
+        board_y -= board_speed*time;
+        board_cf.multiply(new THREE.Matrix4().makeRotationZ(board_speed/500*time));
+        if (board_y <= -75){
+            board_y  = -75;
+            board_x = -3000;
+            board_cf = new THREE.Matrix4().makeTranslation(board_x,board_y, 0);
+        }
+    }
+    board_cf.decompose(tran, quat, vscale);
+    group.position.copy(tran);
+    group.quaternion.copy(quat);
+    water.material.uniforms.time.value -= wavespeed / 60.0;
+    board.position.z = 20*(wavespeed)* time;
     controls.update();
     water.render();
     renderer.render( scene, camera );
 
 }
-
-//var renderer = new THREE.WebGLRenderer();
-//
-//var scene = new THREE.Scene();
-//renderer.setSize(window.innerWidth, window.innerHeight);
-////renderer.setClearColorHex(0xffffff, 1);
-//document.body.appendChild(renderer.domElement);
-//
-//var camera = new THREE.PerspectiveCamera(45,
-//    window.innerWidth/ window.innerHeight, 1,
-//    10000);
-//camera.position.y = -800;
-//camera.position.z = 800;
-//camera.rotation.x = 0.70;
-//
-//var plane = new THREE.Mesh(
-//    new THREE.PlaneGeometry(800,800,1),
-//    new THREE.MeshNormalMaterial()
-//);
-//
-//var cube = new THREE.Mesh(
-//    new THREE.CubeGeometry(60,60,600),
-//    new THREE.MeshNormalMaterial()
-//);
-//
-//cube.position.z = 100;
-//cube.position.x =-200;
-//cube.position.y = 200;
-//
-//
-//var cube2 = new THREE.Mesh(
-//    new THREE.CubeGeometry(60,60,600),
-//    new THREE.MeshNormalMaterial()
-//);
-//
-//cube2.position.z = 100;
-//cube2.position.x = 200;
-//cube2.position.y =-200;
-//
-//var board_group = new THREE.Group();
-//
-//var board = new THREE.Mesh(
-//    new THREE.CubeGeometry(200,60,20),
-//    new THREE.MeshBasicMaterial({color :0x00ff00})
-//);
-//
-//board.position.z = 40;
-//board.position.x = 0;
-//board.position.y = 0;
-//
-//
-//board_group.add(board);
-//
-//scene.add(plane);
-//scene.add(cube);
-//scene.add(cube2);
-//scene.add(board_group);
-
-//window.addEventListener( 'resize', onWindowResize, false );
-//window.addEventListener( 'mousewheel', onMouseWheel, false );
-//window.addEventListener( 'DOMMouseScroll', onMouseWheel, false );
-//window.addEventListener( 'mousemove', onMouseMove, false );
-//
-//function updateRendererSizes() {
-//
-//    // Recalculate size for both renderers when screen size or split location changes
-//
-//    SCREEN_WIDTH = window.innerWidth;
-//    SCREEN_HEIGHT = window.innerHeight;
-//
-//    renderer.setSize(window.innerWidth, window.innerHeight);
-//}
-//function onWindowResize(event) {
-//    updateRendererSizes();
-//}
-//
-//function onBorderMouseMove(ev) {
-//    ev.stopPropagation();
-//}
-//function onBorderMouseUp(ev) {
-//    window.removeEventListener("mousemove", onBorderMouseMove);
-//    window.removeEventListener("mouseup", onBorderMouseUp);
-//}
-//function onMouseMove(ev) {
-//    mouse[0] = ev.clientX / window.innerWidth;
-//    mouse[1] = ev.clientY / window.innerHeight;
-//}
-//function onMouseWheel(ev) {
-//    var amount = -ev.wheelDeltaY || ev.detail;
-//    var dir = amount / Math.abs(amount);
-//    zoomspeed = dir/10;
-//
-//    // Slow down default zoom speed after user starts zooming, to give them more control
-//    minzoomspeed = 0.001;
-//}
-
-//renderer.render(scene, camera);
