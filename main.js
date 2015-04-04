@@ -26,6 +26,9 @@ var board_x;
 var board_y;
 var onlefthp;
 var onrighthp;
+var follow_board;
+var camera_cf;
+var pause_anim;
 
 var parameters = {
     width: 2000,
@@ -100,9 +103,6 @@ function init() {
     /* for repeat to work, the image size must be 2^k */
 
     /* repeat the texture 4 times in both direction */
-    //stone_tex.repeat.set(4,4);
-    //stone_tex.wrapS = THREE.RepeatWrapping;
-    //stone_tex.wrapT = THREE.RepeatWrapping;
 
     var ground =  new THREE.Mesh(
         new THREE.BoxGeometry(12000,8000,500),
@@ -114,6 +114,7 @@ function init() {
 
     var cement_text = THREE.ImageUtils.loadTexture("textures/cement.jpg");
     var grafitti_text = THREE.ImageUtils.loadTexture("textures/grafitti.jpg");
+    var plank_text = THREE.ImageUtils.loadTexture("textures/plankTexture.jpg");
 
     /* for repeat to work, the image size must be 2^k */
 
@@ -143,8 +144,12 @@ function init() {
     board = new THREE.Group();
     var base = new THREE.Mesh(
         new THREE.BoxGeometry(300,150,25),
-        new THREE.MeshPhongMaterial({ color: 0xdddddd,
-            specular: 0x009999, shininess: 30, shading: THREE.FlatShading })
+        new THREE.MeshPhongMaterial({
+            color: 0xdddddd,
+            ambient:0xd3d3d3,
+            map:plank_text,
+            side: THREE.DoubleSide
+             })
     );
     board.add(base);
     board.rotateX(Math.PI/2);
@@ -291,16 +296,13 @@ function animate() {
 
 }
 
-function render() {
-
-    var time = performance.now() * 0.001;
-
-    //if (pauseAnim) return;
+function animate_board(time){
     var tran = new THREE.Vector3();
     var quat = new THREE.Quaternion();
     var rot = new THREE.Quaternion();
     var vscale = new THREE.Vector3();
     //board_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(time * 72)));
+
 
     if ( board_x < -7400){
         board_cf.multiply(new THREE.Matrix4().makeTranslation(board_speed*time,0,0));
@@ -347,6 +349,28 @@ function render() {
     board_cf.decompose(tran, quat, vscale);
     group.position.copy(tran);
     group.quaternion.copy(quat);
+}
+
+function animate_camera(time){
+    if (board_x < -7400){
+        camera.position.x = board_x - 1000;
+        camera.position.z = group.position.z;
+        camera.rotation.y = -Math.PI;
+    }
+    //camera.position.x = board_x - 1000;
+    //camera.position.z = group.position.z;
+    //camera.rotation.y = -Math.PI;
+}
+
+function render() {
+
+    var time = performance.now() * 0.001;
+
+    if (pause_anim) return;
+
+    animate_board(time);
+    if (follow_board ) animate_camera(time);
+
     water.material.uniforms.time.value -= wavespeed / 60.0;
     board.position.z = 20*(wavespeed)* time;
     controls.update();
