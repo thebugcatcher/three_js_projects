@@ -245,8 +245,8 @@ require([],function() {
             else {
                 hexCopter_cf.multiply(new THREE.Matrix4().
                     makeTranslation(
-                    linear_speed * 2 * delta * (-Math.sin(hexCopter.rotation.z)),
-                    0, linear_speed * 2 * delta * (Math.sin(hexCopter.rotation.x))));
+                    (linear_speed + 10000) * 2 * delta * (-Math.sin(hexCopter.rotation.z)),
+                    0, (linear_speed +10000)* 2 * delta * (Math.sin(hexCopter.rotation.x))));
             }
             hexCopter_cf.decompose(tran, quat, vscale);
             hexCopter.position.copy(tran);
