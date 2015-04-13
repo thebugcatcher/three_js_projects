@@ -35,7 +35,7 @@ require([],function() {
     var prop2_speed = min_prop_speed;
     var prop3_speed = min_prop_speed;
     var prop4_speed = min_prop_speed;
-    var linear_speed = prop1_speed + prop2_speed + prop3_speed + prop4_speed;
+    var linear_speed = prop1_speed + prop2_speed + prop3_speed + prop4_speed - 1600;
 
     var vertical_height = 0.0;
     var wavespeed = 10;
@@ -223,7 +223,7 @@ require([],function() {
         var quat = new THREE.Quaternion();
         var rot = new THREE.Quaternion();
         var vscale = new THREE.Vector3();
-        linear_speed = prop3_speed + prop4_speed + prop1_speed + prop2_speed - 20;
+        linear_speed = prop3_speed + prop4_speed + prop1_speed + prop2_speed - 1600;
         {
             hexCopter_cf = new THREE.Matrix4().makeTranslation(
                 hexCopter.position.x,
