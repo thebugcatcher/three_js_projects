@@ -228,9 +228,8 @@ require([],function() {
         {
             hexCopter_cf = new THREE.Matrix4().makeTranslation(
                 hexCopter.position.x,
-                hexCopter.position.y,
+                hexCopter.position.y - gravity*delta*delta,
                 hexCopter.position.z);
-
 
             hexCopter_cf.multiply(new THREE.Matrix4().
                 makeRotationX((prop3_speed + prop4_speed - prop1_speed - prop2_speed) / rotation_factor));
@@ -252,7 +251,6 @@ require([],function() {
             hexCopter_cf.decompose(tran, quat, vscale);
             hexCopter.position.copy(tran);
             hexCopter.quaternion.copy(quat);
-            hexCopter.y -= gravity*delta*delta;
         }
         {
             if (follow) {
