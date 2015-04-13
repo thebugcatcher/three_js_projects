@@ -29,6 +29,7 @@ require([],function() {
     var min_prop_speed = 400;
     var max_prop_speed = 600;
     var inc_rate = 50;
+    var gravity = 98;
     var follow = false;
 
     var prop1_speed = min_prop_speed;
@@ -237,7 +238,7 @@ require([],function() {
 
             hexCopter_cf.multiply(new THREE.Matrix4().
                 makeRotationZ((prop1_speed + prop3_speed - prop2_speed - prop4_speed) / rotation_factor));
-
+            
             if (hexCopter.position.y <= 3000) {
                 hexCopter_cf.multiply(new THREE.Matrix4().
                     makeTranslation(0, linear_speed / 2 * delta, 0));
@@ -251,6 +252,7 @@ require([],function() {
             hexCopter_cf.decompose(tran, quat, vscale);
             hexCopter.position.copy(tran);
             hexCopter.quaternion.copy(quat);
+            hexCopter.y -= gravity*delta*delta;
         }
         {
             if (follow) {
