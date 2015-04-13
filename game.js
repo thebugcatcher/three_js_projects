@@ -29,7 +29,7 @@ require([],function() {
     var min_prop_speed = 400;
     var max_prop_speed = 600;
     var inc_rate = 50;
-    var gravity = 980;
+    var gravity = 980*5;
     var follow = false;
 
     var prop1_speed = min_prop_speed;
