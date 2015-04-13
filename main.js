@@ -86,7 +86,7 @@ function init() {
         sunDirection: light2.position.clone().normalize(),
         sunColor: 0xffffff,
         waterColor: 0x001e0f,
-        distortionScale: 500.0,
+        distortionScale: 500.0
     } );
 
 
@@ -149,7 +149,7 @@ function init() {
             ambient:0xd3d3d3,
             map:plank_text,
             side: THREE.DoubleSide
-             })
+        })
     );
     board.add(base);
     board.rotateX(Math.PI/2);
@@ -243,11 +243,11 @@ function init() {
 
 
     /*var tip = new  THREE.TorusGeometry(.2,.1, 15, 30);
-    var tipMat = new THREE.MeshPhongMaterial({color: 0x000000});
-    var nose = new THREE.Mesh (tip, tipMat);
-    nose.side = THREE.DoubleSide;
+     var tipMat = new THREE.MeshPhongMaterial({color: 0x000000});
+     var nose = new THREE.Mesh (tip, tipMat);
+     nose.side = THREE.DoubleSide;
 
-    nose.position.set(0,3,0);*/
+     nose.position.set(0,3,0);*/
 
     var wheelGeo = new THREE.TorusGeometry(.1*scaling_factor,.08*scaling_factor, 15, 30);
     var tubeMat = new THREE.MeshPhongMaterial({color: 0x000000});
@@ -283,6 +283,32 @@ function init() {
 
     board_cf.multiply(new THREE.Matrix4().makeTranslation(-10000,-75,0));
     board_x = -10000;
+    var loader = new THREE.JSONLoader(); // init the loader util
+
+// init loading
+    loader.load('models/rotor.json', function (geometry) {
+        // create a new material
+        var material_x = new THREE.MeshLambertMaterial({
+            //map: THREE.ImageUtils.loadTexture('textures/rotor_metal.jpg'),  // specify and load the texture
+            colorAmbient: [0.480000026226044, 0.480000026226044, 0.480000026226044],
+            colorDiffuse: [0.480000026226044, 0.480000026226044, 0.480000026226044],
+            colorSpecular: [0.8999999761581421, 0.8999999761581421, 0.8999999761581421]
+        });
+
+        // create a mesh with models geometry and material
+        var mesh = new THREE.Mesh(
+            geometry,
+            material_x
+        );
+
+        mesh.position.y = 1000;
+        mesh.scale.set(100, 100, 100);
+
+        scene.add(mesh);
+    });
+    //scene.add(mesh);
+
+
     scene.add(group);
 
 }
