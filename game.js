@@ -23,7 +23,6 @@ require([],function() {
 
     var water, waterNormals, mirrorMesh;
     
-    var ripple1, ripple2, ripple3 ,ripple4;
 
     var prop1_cf, prop2_cf, prop3_cf, prop4_cf,
         hex_cop_cf, hexCopter_cf, camera_cf;
@@ -136,17 +135,6 @@ require([],function() {
             distortionScale: 10
         });
         
-        ripple1 = new THREE.Water (  rendered, camera, scene, {
-           textureWidth: 512*1.414/3,
-           textureHeight: 512*1.414/3,
-           waterNormals: waterNormals,
-           alpha: 2.0,
-           sunDirection: light.position.clone().normalze(),
-           sunColor:  0xffffff,
-            waterColor: 0x001e0f,
-            distortionScale: 100
-        });
-
         //water.rotation.x = -Math.PI/2;
 
 
