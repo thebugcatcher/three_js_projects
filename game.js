@@ -59,7 +59,7 @@ require([],function() {
             start ^= true;
         }
         if (key == 'f') {
-            start ^= true;
+            follow ^= true;
         }
 
     }, false);
