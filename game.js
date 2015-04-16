@@ -13,7 +13,7 @@ require([],function() {
     var camera, scene, renderer, keyboard;
 
     var render_functions = [];
-    var start = true;
+    var start = false;
 
     var hex_scale = 5;
     var prop_scale = 100;
@@ -22,7 +22,7 @@ require([],function() {
         hex_cop, loader, light;
 
     var water, waterNormals, mirrorMesh;
-    
+
 
     var prop1_cf, prop2_cf, prop3_cf, prop4_cf,
         hex_cop_cf, hexCopter_cf, camera_cf;
@@ -42,6 +42,7 @@ require([],function() {
     var vertical_height = 0.0;
     var wavespeed = 10;
     var rotation_factor = 800;
+    var max_vertical = 10000;
 
 
     var parameters = {
@@ -108,8 +109,8 @@ require([],function() {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     //controls.userPan = false;
     //controls.userPanSpeed = 0.0;
-    ////controls.maxDistance = 12500.0;
-    //controls.maxPolarAngle = Math.PI * 2;
+    controls.maxDistance = 12500.0;
+    controls.maxPolarAngle = Math.PI /3;
     //controls.center.set(0, 500, 0);
 
     light = new THREE.HemisphereLight(0xffffbb, 0x080820, 2);
@@ -128,14 +129,14 @@ require([],function() {
             textureWidth: 512,
             textureHeight: 512,
             waterNormals: waterNormals,
-            alpha: 1.0,
+            alpha: 2.0,
             sunDirection: light.position.clone().normalize(),
             sunColor: 0xffffff,
             waterColor: 0x001e0f,
             distortionScale: 10
         });
-        
-        //water.rotation.x = -Math.PI/2;
+
+        water.position.x = -2000;
 
 
         mirrorMesh = new THREE.Mesh(
@@ -143,8 +144,9 @@ require([],function() {
             water.material
         );
 
-        mirrorMesh.add(water);
         mirrorMesh.rotation.x = -Math.PI * 0.5;
+        mirrorMesh.add(water);
+
         scene.add(mirrorMesh);
 
         var sky = new THREE.Mesh(
@@ -170,7 +172,7 @@ require([],function() {
     hex_cop_cf.makeTranslation(0, 0, 0);
     hexCopter.add(hex_cop);
 
-    //hexCopter.add(camera);
+    hexCopter.add(camera);
     {
         prop1 = new Propeller(scene, prop_scale, loader);
         prop1.position.x = 610;
@@ -238,8 +240,8 @@ require([],function() {
 
             hexCopter_cf.multiply(new THREE.Matrix4().
                 makeRotationZ((prop1_speed + prop3_speed - prop2_speed - prop4_speed) / rotation_factor));
-            
-            if (hexCopter.position.y <= 3000) {
+
+            if (hexCopter.position.y <= max_vertical) {
                 hexCopter_cf.multiply(new THREE.Matrix4().
                     makeTranslation(0, linear_speed / 2 * delta, 0));
             }
@@ -255,16 +257,9 @@ require([],function() {
         }
         {
             if (follow) {
-               camera_cf = new THREE.Matrix4().makeTranslation(hexCopter.x + 5000, hexCopter.y + 5000, hexCopter.z);
+                camera_cf = new THREE.Matrix4().makeTranslation(hexCopter.x + 5000, hexCopter.y + 5000, hexCopter.z);
                 camera_cf.makeRotationY(Math.PI/2);
                 camera_cf.decompose(tran, quat, vscale);
-                //camera.lookAt(hexCopter);
-                //camera.position.x = hexCopter.x + 5000;
-                //camera.position.x = hexCopter.x - 5000;
-                //camera.position.z = hexCopter.z;
-                //controls.center.set(hexCopter.x + 5000, hexCopter.y-5000, hexCopter.z);
-                //camera.position.copy(tran);
-                //camera.quaternion.copy(quat);
             }
         }
         {
