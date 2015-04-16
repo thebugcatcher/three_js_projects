@@ -23,6 +23,8 @@ require([],function() {
 
     var water, waterNormals, mirrorMesh;
 
+    var uglyDuckling_cf,uglyDuckling, ugly;
+
     var prop1_cf, prop2_cf, prop3_cf, prop4_cf,
         hex_cop_cf, hexCopter_cf, camera_cf;
 
@@ -169,6 +171,16 @@ require([],function() {
     hex_cop_cf.makeTranslation(0, 0, 0);
     hexCopter.add(hex_cop);
 
+
+ /*   ugly = new THREE.Group();
+    uglyDuckling = new UglyDuckling(scene);
+    uglyDuckling_cf = new THREE.Matrix4();
+    uglyDuckling_cf.makeTranslation(0,0,0);
+    ugly.add(uglyDuckling);*/
+
+
+
+
     //hexCopter.add(camera);
     {
         prop1 = new Propeller(scene, prop_scale, loader);
@@ -210,6 +222,29 @@ require([],function() {
     hexCopter_cf.makeTranslation(0, 1000, 0);
     hexCopter.position.y = 1000;
     scene.add(hexCopter);
+
+
+    var firstBox = new THREE.BoxGeometry(1000,1000,1000);
+    var material = new THREE.MeshBasicMaterial( {color:0xd3d3d3});
+    var box1 = new THREE.Mesh(firstBox, material );
+    box1.position.set(5000,1000,50);
+
+    var secondBox = new THREE.BoxGeometry(1000,1000,1000);
+    var material2 = new THREE.MeshBasicMaterial( {color:0xd3d3d3});
+    var box2 = new THREE.Mesh(secondBox, material2);
+    box2.position.set(12000,2000,-1000);
+
+    var thirdBox = new THREE.BoxGeometry(1000,1000,1000);
+    var material3 = new THREE.MeshBasicMaterial( {color:0xd3d3d3});
+    var box3 = new THREE.Mesh(thirdBox, material3);
+    box3.position.set(18000,600,1000);
+
+
+    scene.add(box1);
+    scene.add(box2);
+    scene.add(box3);
+
+    //scene.add(ugly);
 
     render_functions.push(function(delta, now){
 
