@@ -13,7 +13,7 @@ require([],function() {
     var camera, scene, renderer, keyboard;
 
     var render_functions = [];
-    var start = false;
+    var start = true;
 
     var hex_scale = 5;
     var prop_scale = 100;
