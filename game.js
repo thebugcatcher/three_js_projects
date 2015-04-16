@@ -18,6 +18,8 @@ require([],function() {
     var hex_scale = 5;
     var prop_scale = 100;
 
+    var goku;
+
     var prop1, prop2, prop3, prop4, hexCopter,
         hex_cop, loader, light;
 
@@ -109,8 +111,8 @@ require([],function() {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     //controls.userPan = false;
     //controls.userPanSpeed = 0.0;
-    controls.maxDistance = 12500.0;
-    controls.maxPolarAngle = Math.PI /3;
+    //controls.maxDistance = 12500.0;
+    //controls.maxPolarAngle = Math.PI /3;
     //controls.center.set(0, 500, 0);
 
     light = new THREE.HemisphereLight(0xffffbb, 0x080820, 2);
@@ -173,6 +175,11 @@ require([],function() {
     hexCopter.add(hex_cop);
 
     hexCopter.add(camera);
+
+    {
+        goku = new Goku(scene, hex_scale, loader);
+        scene.add(goku);
+    }
     {
         prop1 = new Propeller(scene, prop_scale, loader);
         prop1.position.x = 610;
