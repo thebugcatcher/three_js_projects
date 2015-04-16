@@ -1,6 +1,7 @@
 /**
- * Created by davidtanner on 4/15/15.
+ * Created by davidtanner on 4/8/15.
  */
+
 
 UglyDuckling = function()
 {
@@ -41,9 +42,25 @@ UglyDuckling = function()
     spot.position.set(-1, 1, 0);
     //scene.add( spot )
 
+    var float_r = new THREE.CylinderGeometry(.5,.5,4);
+    var floatMat = new THREE.MeshBasicMaterial({color:0xd3d3d3});
+    var floatRight = new THREE.Mesh (float_r, floatMat);
+    floatRight.rotateZ(THREE.Math.degToRad(90));
+    floatRight.position.set(0,-0.5,-1);
+
+    var floatLeft = floatRight.clone();
+    floatLeft.position.set(0,-0.5,1);
+
+    var floatGroup = new THREE.Group();
+    floatGroup.add(floatRight);
+    floatGroup.add(floatLeft);
+
+    //var floatLeft = floatGroup.clone();
+
 
     var group = new THREE.Group();
 
+    group.add(floatGroup);
     group.add(body);
     group.add(bodyTip);
     group.add(bodyBack);
