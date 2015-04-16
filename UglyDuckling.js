@@ -55,10 +55,30 @@ UglyDuckling = function()
     floatGroup.add(floatRight);
     floatGroup.add(floatLeft);
 
-    //var floatLeft = floatGroup.clone();
+
+    var mote = new THREE.CylinderGeometry(.2,.2,.4);
+    var moteMat = new THREE.MeshBasicMaterial({color:0xFFd3d3});
+    var frontLeftMoter = new THREE.Mesh (mote, moteMat);
+    frontLeftMoter.position.set(-2.9,0.1,2.9);
+
+    var frontRightMoter = frontLeftMoter.clone();
+    frontRightMoter.position.set(2.9,0.1,2.9);
+
+    var backLeftMoter = frontLeftMoter.clone();
+    backLeftMoter.position.set(2.9,0.1,-2.9);
+
+    var backRightMoter = frontLeftMoter.clone();
+    backRightMoter.position.set(-2.9,0.1,-2.9);
+
+
+
 
 
     var group = new THREE.Group();
+    group.add(frontLeftMoter);
+    group.add(frontRightMoter);
+    group.add(backLeftMoter);
+    group.add(backRightMoter);
 
     group.add(floatGroup);
     group.add(body);
