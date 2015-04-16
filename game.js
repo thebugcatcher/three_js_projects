@@ -227,7 +227,7 @@ require([],function() {
         var quat = new THREE.Quaternion();
         var rot = new THREE.Quaternion();
         var vscale = new THREE.Vector3();
-        linear_speed = prop3_speed + prop4_speed + prop1_speed + prop2_speed - 1600;
+        linear_speed = prop3_speed + prop4_speed + prop1_speed + prop2_speed - 4*min_prop_speed;
         {
             hexCopter_cf = new THREE.Matrix4().makeTranslation(
                 hexCopter.position.x,
