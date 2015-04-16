@@ -54,111 +54,111 @@ Goku = function(scene, hex_scale,loader){
         mesh.scale.set(hex_scale, hex_scale, hex_scale);
 
         group.add(mesh);
-    });
-    loader.load('jsons/goku_part5.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part6.json', function (geometry) {
-
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part7.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part8.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part9.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part10.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part11.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
-    loader.load('jsons/goku_part12.json', function (geometry) {
-
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
-
-
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
-
-        group.add(mesh);
-    });
+    //});
+    //loader.load('jsons/goku_part5.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part6.json', function (geometry) {
+    //
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part7.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part8.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part9.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part10.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part11.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
+    //loader.load('jsons/goku_part12.json', function (geometry) {
+    //
+    //    // create a mesh with models geometry and material
+    //    var mesh = new THREE.Mesh(
+    //        geometry,
+    //        material_x
+    //    );
+    //
+    //
+    //    mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //
+    //    group.add(mesh);
+    //});
     return group;
 }
