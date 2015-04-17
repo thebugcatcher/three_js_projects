@@ -35,10 +35,10 @@ require([],function() {
     var gravity = 19600;
     var follow = false;
 
-    var prop1_speed = min_prop_speed;
-    var prop2_speed = min_prop_speed;
-    var prop3_speed = min_prop_speed;
-    var prop4_speed = min_prop_speed;
+    var prop1_speed = 3*min_prop_speed;
+    var prop2_speed = 3*min_prop_speed;
+    var prop3_speed = 3*min_prop_speed;
+    var prop4_speed = 3*min_prop_speed;
     var linear_speed = prop1_speed + prop2_speed + prop3_speed + prop4_speed - 1600;
 
     var vertical_height = 0.0;
