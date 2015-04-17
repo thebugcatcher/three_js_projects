@@ -147,18 +147,18 @@ Goku = function(scene, hex_scale,loader){
 
         group.add(mesh);
     });
-    loader.load('jsons/goku_part12.json', function (geometry) {
+    // loader.load('jsons/goku_part12.json', function (geometry) {
 
-        // create a mesh with models geometry and material
-        var mesh = new THREE.Mesh(
-            geometry,
-            material_x
-        );
+    //     // create a mesh with models geometry and material
+    //     var mesh = new THREE.Mesh(
+    //         geometry,
+    //         material_x
+    //     );
 
 
-        mesh.scale.set(hex_scale, hex_scale, hex_scale);
+    //     mesh.scale.set(hex_scale, hex_scale, hex_scale);
 
-        group.add(mesh);
-    });
+    //     group.add(mesh);
+    // });
     return group;
 }
