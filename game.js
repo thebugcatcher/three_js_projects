@@ -230,100 +230,100 @@ require([],function() {
     });
 
     render_functions.push(function(delta) {
-        var tran = new THREE.Vector3();
-        var quat = new THREE.Quaternion();
-        var rot = new THREE.Quaternion();
-        var vscale = new THREE.Vector3();
-        linear_speed = prop3_speed + prop4_speed + prop1_speed + prop2_speed - 4*min_prop_speed;
-        {
-            hexCopter_cf = new THREE.Matrix4().makeTranslation(
-                hexCopter.position.x,
-                hexCopter.position.y - gravity*delta*delta,
-                hexCopter.position.z);
+        // var tran = new THREE.Vector3();
+        // var quat = new THREE.Quaternion();
+        // var rot = new THREE.Quaternion();
+        // var vscale = new THREE.Vector3();
+        // linear_speed = prop3_speed + prop4_speed + prop1_speed + prop2_speed - 4*min_prop_speed;
+        // {
+        //     hexCopter_cf = new THREE.Matrix4().makeTranslation(
+        //         hexCopter.position.x,
+        //         hexCopter.position.y - gravity*delta*delta,
+        //         hexCopter.position.z);
 
-            hexCopter_cf.multiply(new THREE.Matrix4().
-                makeRotationX((prop3_speed + prop4_speed - prop1_speed - prop2_speed) / rotation_factor));
+        //     hexCopter_cf.multiply(new THREE.Matrix4().
+        //         makeRotationX((prop3_speed + prop4_speed - prop1_speed - prop2_speed) / rotation_factor));
 
 
-            hexCopter_cf.multiply(new THREE.Matrix4().
-                makeRotationZ((prop1_speed + prop3_speed - prop2_speed - prop4_speed) / rotation_factor));
+        //     hexCopter_cf.multiply(new THREE.Matrix4().
+        //         makeRotationZ((prop1_speed + prop3_speed - prop2_speed - prop4_speed) / rotation_factor));
 
-            if (hexCopter.position.y <= max_vertical) {
-                hexCopter_cf.multiply(new THREE.Matrix4().
-                    makeTranslation(0, linear_speed / 2 * delta, 0));
-            }
-            else {
-                hexCopter_cf.multiply(new THREE.Matrix4().
-                    makeTranslation(
-                    (linear_speed + 10000) * 2 * delta * (-Math.sin(hexCopter.rotation.z)),
-                    0, (linear_speed +10000)* 2 * delta * (Math.sin(hexCopter.rotation.x))));
-            }
-            hexCopter_cf.decompose(tran, quat, vscale);
-            hexCopter.position.copy(tran);
-            hexCopter.quaternion.copy(quat);
-        }
-        {
-            if (follow) {
-                camera_cf = new THREE.Matrix4().makeTranslation(hexCopter.x + 5000, hexCopter.y + 5000, hexCopter.z);
-                camera_cf.makeRotationY(Math.PI/2);
-                camera_cf.decompose(tran, quat, vscale);
-            }
-        }
-        {
-            if (prop1_speed > min_prop_speed) {
-                prop1_speed -= inc_rate * delta;
-            }
-            else {
-                prop1_speed = min_prop_speed;
-            }
-            if (prop2_speed > min_prop_speed) {
-                prop2_speed -= inc_rate * delta;
-            }
-            else {
-                prop2_speed = min_prop_speed;
-            }
-            if (prop3_speed > min_prop_speed) {
-                prop3_speed -= inc_rate * delta;
-            }
-            else {
-                prop3_speed = min_prop_speed;
-            }
-            if (prop4_speed > min_prop_speed) {
-                prop4_speed -= inc_rate * delta;
-            }
-            else {
-                prop4_speed = min_prop_speed;
-            }
-        }
-        {
-            prop1_cf.multiply(new THREE.Matrix4().
-                makeRotationY(prop1_speed * Math.PI / 200 * delta));
+        //     if (hexCopter.position.y <= max_vertical) {
+        //         hexCopter_cf.multiply(new THREE.Matrix4().
+        //             makeTranslation(0, linear_speed / 2 * delta, 0));
+        //     }
+        //     else {
+        //         hexCopter_cf.multiply(new THREE.Matrix4().
+        //             makeTranslation(
+        //             (linear_speed + 10000) * 2 * delta * (-Math.sin(hexCopter.rotation.z)),
+        //             0, (linear_speed +10000)* 2 * delta * (Math.sin(hexCopter.rotation.x))));
+        //     }
+        //     hexCopter_cf.decompose(tran, quat, vscale);
+        //     hexCopter.position.copy(tran);
+        //     hexCopter.quaternion.copy(quat);
+        // }
+        // {
+        //     if (follow) {
+        //         camera_cf = new THREE.Matrix4().makeTranslation(hexCopter.x + 5000, hexCopter.y + 5000, hexCopter.z);
+        //         camera_cf.makeRotationY(Math.PI/2);
+        //         camera_cf.decompose(tran, quat, vscale);
+        //     }
+        // }
+        // {
+        //     if (prop1_speed > min_prop_speed) {
+        //         prop1_speed -= inc_rate * delta;
+        //     }
+        //     else {
+        //         prop1_speed = min_prop_speed;
+        //     }
+        //     if (prop2_speed > min_prop_speed) {
+        //         prop2_speed -= inc_rate * delta;
+        //     }
+        //     else {
+        //         prop2_speed = min_prop_speed;
+        //     }
+        //     if (prop3_speed > min_prop_speed) {
+        //         prop3_speed -= inc_rate * delta;
+        //     }
+        //     else {
+        //         prop3_speed = min_prop_speed;
+        //     }
+        //     if (prop4_speed > min_prop_speed) {
+        //         prop4_speed -= inc_rate * delta;
+        //     }
+        //     else {
+        //         prop4_speed = min_prop_speed;
+        //     }
+        // }
+        // {
+        //     prop1_cf.multiply(new THREE.Matrix4().
+        //         makeRotationY(prop1_speed * Math.PI / 200 * delta));
 
-            prop1_cf.decompose(tran, quat, vscale);
-            prop1.position.copy(tran);
-            prop1.quaternion.copy(quat);
+        //     prop1_cf.decompose(tran, quat, vscale);
+        //     prop1.position.copy(tran);
+        //     prop1.quaternion.copy(quat);
 
-            prop2_cf.multiply(new THREE.Matrix4().
-                makeRotationY(-prop2_speed * Math.PI / 200 * delta));
+        //     prop2_cf.multiply(new THREE.Matrix4().
+        //         makeRotationY(-prop2_speed * Math.PI / 200 * delta));
 
-            prop2_cf.decompose(tran, quat, vscale);
-            prop2.position.copy(tran);
-            prop2.quaternion.copy(quat);
+        //     prop2_cf.decompose(tran, quat, vscale);
+        //     prop2.position.copy(tran);
+        //     prop2.quaternion.copy(quat);
 
-            prop3_cf.multiply(new THREE.Matrix4().
-                makeRotationY(prop3_speed * Math.PI / 200 * delta));
+        //     prop3_cf.multiply(new THREE.Matrix4().
+        //         makeRotationY(prop3_speed * Math.PI / 200 * delta));
 
-            prop3_cf.decompose(tran, quat, vscale);
-            prop3.position.copy(tran);
-            prop3.quaternion.copy(quat);
+        //     prop3_cf.decompose(tran, quat, vscale);
+        //     prop3.position.copy(tran);
+        //     prop3.quaternion.copy(quat);
 
-            prop4_cf.multiply(new THREE.Matrix4().
-                makeRotationY(-prop4_speed * Math.PI / 200 * delta));
+        //     prop4_cf.multiply(new THREE.Matrix4().
+        //         makeRotationY(-prop4_speed * Math.PI / 200 * delta));
 
-            prop4_cf.decompose(tran, quat, vscale);
-            prop4.position.copy(tran);
-            prop4.quaternion.copy(quat);
-        }
+        //     prop4_cf.decompose(tran, quat, vscale);
+        //     prop4.position.copy(tran);
+        //     prop4.quaternion.copy(quat);
+        // }
     });
 
     render_functions.push(function(){
