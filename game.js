@@ -174,8 +174,7 @@ require([],function() {
     hex_cop_cf.makeTranslation(0, 0, 0);
     hexCopter.add(hex_cop);
 
-    //hexCopter.add(camera);
-    scene.add(camera);
+    hexCopter.add(camera);
     {
         goku = new Goku(scene, hex_scale, loader);
         scene.add(goku);
@@ -219,7 +218,7 @@ require([],function() {
     hexCopter_cf = new THREE.Matrix4();
     hexCopter_cf.makeTranslation(0, 1000, 0);
     hexCopter.position.y = 1000;
-    //scene.add(hexCopter);
+    scene.add(hexCopter);
 
     render_functions.push(function(delta, now){
 
