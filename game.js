@@ -30,9 +30,9 @@ require([],function() {
         hex_cop_cf, hexCopter_cf, camera_cf;
 
     var min_prop_speed = 400;
-    var max_prop_speed = 800;
+    var max_prop_speed = 3000;
     var inc_rate = 50;
-    var gravity = 0;
+    var gravity = 1960;
     var follow = false;
 
     var prop1_speed = min_prop_speed;
@@ -175,9 +175,11 @@ require([],function() {
     hexCopter.add(hex_cop);
 
     hexCopter.add(camera);
+    //scene.add(camera);
+
     {
-        goku = new Goku(scene, hex_scale, loader);
-        scene.add(goku);
+        //goku = new Goku(scene, hex_scale, loader);
+        //scene.add(goku);
     }
     {
         prop1 = new Propeller(scene, prop_scale, loader);
@@ -219,6 +221,26 @@ require([],function() {
     hexCopter_cf.makeTranslation(0, 1000, 0);
     hexCopter.position.y = 1000;
     scene.add(hexCopter);
+    {
+        var geometry = new THREE.TorusGeometry(10, 2, 4, 4);
+        var material = new THREE.MeshBasicMaterial({color: 0xffff00});
+        var torus = new THREE.Mesh(geometry, material);
+
+        torus.scale.set(30, 30, 30);
+        torus.rotateX(THREE.Math.degToRad(45));
+        torus.rotateY(THREE.Math.degToRad(90));
+        torus.position.set(700, 500, 0);
+        scene.add(torus);
+
+        for (var i = 0; i <= 7; i++) {
+            var test = torus.clone();
+            var y = Math.floor((Math.random() * 3000) + 1);
+            var z = Math.floor((Math.random() * 6000) + 1);
+
+            torus.position.set(i * 5000, y, z);
+            scene.add(test);
+        }
+    }
 
     render_functions.push(function(delta, now){
 
