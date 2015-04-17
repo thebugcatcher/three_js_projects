@@ -6,8 +6,18 @@ updateScore = function(score){
     $('#score span').text(score);
 }
 
+var count = 0;
+
+clockTimer = function(){
+    $('#timer span').text(count);
+    count++;
+    if(count > 60) clearInterval(timer);
+}
+
+var timer = setInterval(clockTimer, 1000)
 
 require([],function() {
+
     if (!Detector.webgl) {
 
         Detector.addGetWebGLMessage();
