@@ -1,6 +1,12 @@
 /**
  * Created by adityaiyengar on 4/12/15.
  */
+
+updateScore = function(score){
+    $('#score span').text(score);
+}
+
+
 require([],function() {
     if (!Detector.webgl) {
 
@@ -242,7 +248,6 @@ require([],function() {
         torus.position.set(i*5000,y,z);
         scene.add(test);
     }
-
 
     scene.add(ugly);
 
