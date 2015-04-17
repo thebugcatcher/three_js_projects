@@ -29,8 +29,8 @@ require([],function() {
     var prop1_cf, prop2_cf, prop3_cf, prop4_cf,
         hex_cop_cf, hexCopter_cf, camera_cf;
 
-    var min_prop_speed = 400;
-    var max_prop_speed = 3000;
+    var min_prop_speed = 4000;
+    var max_prop_speed = 30000;
     var inc_rate = 50;
     var gravity = 19600;
     var follow = false;
