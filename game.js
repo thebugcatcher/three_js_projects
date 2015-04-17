@@ -171,12 +171,14 @@ require([],function() {
     hex_cop_cf.makeTranslation(0, 0, 0);
     hexCopter.add(hex_cop);
 
-
- /*   ugly = new THREE.Group();
+    ugly = new THREE.Group();
     uglyDuckling = new UglyDuckling(scene);
     uglyDuckling_cf = new THREE.Matrix4();
     uglyDuckling_cf.makeTranslation(0,0,0);
-    ugly.add(uglyDuckling);*/
+
+    uglyDuckling.scale.set(30,30,30);
+    uglyDuckling.position.set(0,100, 0);
+    ugly.add(uglyDuckling);
 
 
 
@@ -221,30 +223,28 @@ require([],function() {
     hexCopter_cf = new THREE.Matrix4();
     hexCopter_cf.makeTranslation(0, 1000, 0);
     hexCopter.position.y = 1000;
-    scene.add(hexCopter);
+    //scene.add(hexCopter);
+    var geometry = new THREE.TorusGeometry( 10, 2,4, 4 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    var torus = new THREE.Mesh( geometry, material );
+
+    torus.scale.set(30,30,30);
+    torus.rotateX(THREE.Math.degToRad(45));
+    torus.rotateY(THREE.Math.degToRad(90));
+    torus.position.set(700,500,0);
+    scene.add( torus );
+
+    for(var i = 0;i <=7; i++){
+        var test = torus.clone();
+        var y = Math.floor((Math.random() * 3000) + 1);
+        var z = Math.floor((Math.random() * 6000) + 1);
+
+        torus.position.set(i*5000,y,z);
+        scene.add(test);
+    }
 
 
-    var firstBox = new THREE.BoxGeometry(1000,1000,1000);
-    var material = new THREE.MeshBasicMaterial( {color:0xd3d3d3});
-    var box1 = new THREE.Mesh(firstBox, material );
-    box1.position.set(5000,1000,50);
-
-    var secondBox = new THREE.BoxGeometry(1000,1000,1000);
-    var material2 = new THREE.MeshBasicMaterial( {color:0xd3d3d3});
-    var box2 = new THREE.Mesh(secondBox, material2);
-    box2.position.set(12000,2000,-1000);
-
-    var thirdBox = new THREE.BoxGeometry(1000,1000,1000);
-    var material3 = new THREE.MeshBasicMaterial( {color:0xd3d3d3});
-    var box3 = new THREE.Mesh(thirdBox, material3);
-    box3.position.set(18000,600,1000);
-
-
-    scene.add(box1);
-    scene.add(box2);
-    scene.add(box3);
-
-    //scene.add(ugly);
+    scene.add(ugly);
 
     render_functions.push(function(delta, now){
 

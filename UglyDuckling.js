@@ -6,7 +6,9 @@
 UglyDuckling = function()
 {
 
-    var cover = THREE.ImageUtils.loadTexture("cheese.jpg");
+    var cover = THREE.ImageUtils.loadTexture("textures/graphite.jpeg");
+
+    var floatCover = THREE.ImageUtils.loadTexture("textures/aluminum.jpeg");
 
     var top = new THREE.BoxGeometry(2,2,.5,15,30);
     var material = new THREE.MeshBasicMaterial( {color:0xd3d3d3, ambient:0xd3d3d3, map:cover});
@@ -43,7 +45,7 @@ UglyDuckling = function()
     //scene.add( spot )
 
     var float_r = new THREE.CylinderGeometry(.5,.5,4);
-    var floatMat = new THREE.MeshBasicMaterial({color:0xd3d3d3});
+    var floatMat = new THREE.MeshBasicMaterial( {color:0xd3d3d3, ambient:0xd3d3d3, map:floatCover});
     var floatRight = new THREE.Mesh (float_r, floatMat);
     floatRight.rotateZ(THREE.Math.degToRad(90));
     floatRight.position.set(0,-0.5,-1);
