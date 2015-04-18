@@ -13,6 +13,7 @@ require([],function() {
     var camera, scene, renderer, keyboard;
 
     var render_functions = [];
+    var ring_array = [];
     var start = true;
 
     var hex_scale = 5;
@@ -29,17 +30,19 @@ require([],function() {
     var prop1_cf, prop2_cf, prop3_cf, prop4_cf,
         hex_cop_cf, hexCopter_cf, camera_cf;
 
-    var min_prop_speed = 4000;
-    var max_prop_speed = 30000;
+    var min_prop_speed = 400;
+    var max_prop_speed = 3000;
     var inc_rate = 50;
-    var gravity = 19600;
+    var gravity = 1960;
     var follow = false;
 
-    var prop1_speed = 3*min_prop_speed;
-    var prop2_speed = 3*min_prop_speed;
-    var prop3_speed = 3*min_prop_speed;
-    var prop4_speed = 3*min_prop_speed;
+    var prop1_speed = min_prop_speed;
+    var prop2_speed = min_prop_speed;
+    var prop3_speed = min_prop_speed;
+    var prop4_speed = min_prop_speed;
     var linear_speed = prop1_speed + prop2_speed + prop3_speed + prop4_speed - 1600;
+
+    var ring_length, ring_width;
 
     var vertical_height = 0.0;
     var wavespeed = 10;
@@ -87,8 +90,6 @@ require([],function() {
                 prop4_speed += inc_rate;
         }
     });
-
-
 
 
     container = document.createElement('div');
@@ -222,7 +223,7 @@ require([],function() {
     hexCopter.position.y = 1000;
     scene.add(hexCopter);
     {
-        var geometry = new THREE.TorusGeometry(10, 2, 4, 4);
+        var geometry = new THREE.TorusGeometry(30, 2, 4, 4);
         var material = new THREE.MeshBasicMaterial({color: 0xffff00});
         var torus = new THREE.Mesh(geometry, material);
 
@@ -234,13 +235,29 @@ require([],function() {
 
         for (var i = 0; i <= 7; i++) {
             var test = torus.clone();
-            var y = Math.floor((Math.random() * 3000) + 1);
+            var y = Math.floor((Math.random() * 9000) + 1);
             var z = Math.floor((Math.random() * 6000) + 1);
 
             torus.position.set(i * 5000, y, z);
             scene.add(test);
+            ring_array.push(test);
         }
     }
+
+    render_functions.push(function (){
+        for (var i = 0; i < 7; i++){
+            if (hex_cop.position.x > ring_array[i].position.x &&
+                hex_cop.position.x < ring_array[i].position.x+1000){
+                if (hex_cop.position.y > ring_array[i].position.x &&
+                    hex_cop.position.y < ring_array[i].position.y+900){
+                    if (hex_cop.position.z > ring_array[i].position.z &&
+                        hex_cop.position.z < ring_array[i].position.z+900){
+                        ring_array[i].material = new THREE.MeshBasicMaterial({color: 0xffffff});
+                    }
+                }
+            }
+        }
+    });
 
     render_functions.push(function(delta, now){
 
