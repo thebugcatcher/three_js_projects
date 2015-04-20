@@ -179,8 +179,8 @@ require([],function() {
     //scene.add(camera);
 
     {
-        //goku = new Goku(scene, hex_scale, loader);
-        //scene.add(goku);
+        goku = new Goku(scene, hex_scale, loader);
+        scene.add(goku);
     }
     {
         prop1 = new Propeller(scene, prop_scale, loader);
