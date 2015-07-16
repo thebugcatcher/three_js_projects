@@ -112,8 +112,8 @@ require([],function() {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     //controls.userPan = false;
     //controls.userPanSpeed = 0.0;
-    //controls.maxDistance = 12500.0;
-    //controls.maxPolarAngle = Math.PI /3;
+    controls.maxDistance = 12500;
+    controls.maxPolarAngle = Math.PI /3;
     //controls.center.set(0, 500, 0);
 
     light = new THREE.HemisphereLight(0xffffbb, 0x080820, 2);
@@ -177,11 +177,6 @@ require([],function() {
 
     hexCopter.add(camera);
     //scene.add(camera);
-
-    {
-        goku = new Goku(scene, hex_scale, loader);
-        scene.add(goku);
-    }
     {
         prop1 = new Propeller(scene, prop_scale, loader);
         prop1.position.x = 610;
@@ -222,43 +217,7 @@ require([],function() {
     hexCopter_cf.makeTranslation(0, 1000, 0);
     hexCopter.position.y = 1000;
     scene.add(hexCopter);
-    {
-        var geometry = new THREE.TorusGeometry(30, 2, 4, 4);
-        var material = new THREE.MeshBasicMaterial({color: 0xffff00});
-        var torus = new THREE.Mesh(geometry, material);
-
-        torus.scale.set(30, 30, 30);
-        torus.rotateX(THREE.Math.degToRad(45));
-        torus.rotateY(THREE.Math.degToRad(90));
-        torus.position.set(700, 500, 0);
-        scene.add(torus);
-
-        for (var i = 0; i <= 7; i++) {
-            var test = torus.clone();
-            var y = Math.floor((Math.random() * 9000) + 1);
-            var z = Math.floor((Math.random() * 6000) + 1);
-
-            torus.position.set(i * 5000, y, z);
-            scene.add(test);
-            ring_array.push(test);
-        }
-    }
-
-    render_functions.push(function (){
-        for (var i = 0; i < 7; i++){
-            if (hex_cop.position.x > ring_array[i].position.x &&
-                hex_cop.position.x < ring_array[i].position.x+1000){
-                if (hex_cop.position.y > ring_array[i].position.x &&
-                    hex_cop.position.y < ring_array[i].position.y+900){
-                    if (hex_cop.position.z > ring_array[i].position.z &&
-                        hex_cop.position.z < ring_array[i].position.z+900){
-                        ring_array[i].material = new THREE.MeshBasicMaterial({color: 0xffffff});
-                    }
-                }
-            }
-        }
-    });
-
+    
     render_functions.push(function(delta, now){
 
         water.material.uniforms.time.value -= wavespeed *delta;
