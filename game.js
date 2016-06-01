@@ -176,6 +176,9 @@ require([],function() {
     hexCopter.add(hex_cop);
 
     hexCopter.add(camera);
+
+    goku = new Goku(scene, hex_scale, loader);
+
     //scene.add(camera);
     {
         prop1 = new Propeller(scene, prop_scale, loader);
@@ -217,7 +220,10 @@ require([],function() {
     hexCopter_cf.makeTranslation(0, 1000, 0);
     hexCopter.position.y = 1000;
     scene.add(hexCopter);
-    
+    goku.position.y = 100
+    goku.position.x = 100;
+    scene.add(goku);
+
     render_functions.push(function(delta, now){
 
         water.material.uniforms.time.value -= wavespeed *delta;
